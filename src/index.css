@@ -1,0 +1,162 @@
+/* ============================================================
+   index.css — Global tokens, resets, and base styles
+   ============================================================ */
+
+/*
+  Adobe Fonts (Nobel + Finder) are loaded via index.html:
+  <link rel="stylesheet" href="https://use.typekit.net/urk1lcs.css">
+  No @import needed here — the <link> tag handles it.
+*/
+
+/* ---------- DESIGN TOKENS ---------- */
+:root {
+  /* Backgrounds */
+  --color-bg:          #161B22;
+  --color-bg-surface:  #1E2530;
+  --color-bg-raised:   #252D3A;
+
+  /* Accent */
+  --color-accent:      #cc4f10;
+  --color-accent-dim:  rgba(204, 79, 16, 0.18);
+  --color-accent-glow: rgba(204, 79, 16, 0.35);
+
+  /* Text */
+  --color-text-primary:   #F0F4F8;
+  --color-text-secondary: #8A97A8;
+  --color-text-muted:     #4A5568;
+
+  /* Borders */
+  --color-border:        rgba(255, 255, 255, 0.07);
+  --color-border-accent: rgba(245, 166, 35, 0.4);
+
+  /* Typography — Adobe Fonts kit names */
+  --font-display: 'nobel', 'Arial Black', sans-serif;
+  --font-body:    'finder', 'Helvetica Neue', sans-serif;
+
+  /* Spacing / sizing */
+  --section-pad-x: clamp(1.5rem, 5vw, 6rem);
+  --section-pad-y: clamp(3rem, 8vh, 7rem);
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ---------- RESET ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent scroll while GSAP pins sections */
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+/* ---------- SHARED SECTION SHELL ----------
+   Every section gets .section-panel — a full-viewport panel
+   that GSAP will pin and animate between.
+   ------------------------------------------ */
+.section-panel {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--section-pad-y) var(--section-pad-x);
+  overflow: hidden;
+
+  /* Subtle top border line to define section edges */
+  border-top: 1px solid var(--color-border);
+}
+
+/* Accent hairline that animates in when a section enters */
+.section-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+  transition: width 0.8s var(--ease-smooth);
+}
+
+.section-panel.is-active::before {
+  width: 60%;
+}
+
+/* ---------- SHARED TYPOGRAPHY ---------- */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+}
+
+.section-subheading {
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.75rem;
+}
+
+.section-body {
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  color: var(--color-text-secondary);
+  max-width: 560px;
+  line-height: 1.75;
+}
+
+/* ---------- ACCENT CHIP ---------- */
+.accent-chip {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--color-border-accent);
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+/* ---------- SCROLL PROGRESS INDICATOR ---------- */
+#scroll-progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--color-accent);
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 0 10px var(--color-accent-glow), 0 0 20px var(--color-accent-glow);
+}

@@ -1,0 +1,57 @@
+/* boardStage.css */
+
+.board-stage {
+  background-color: var(--color-bg);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Radial amber glow behind the board */
+.board-stage__bg-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 55%,
+    rgba(245, 166, 35, 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Board image stack — body + tail sit flush */
+.board-stage__wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+  /* Leave room for the label at the bottom */
+  margin-bottom: 5rem;
+}
+
+.board-stage__body,
+.board-stage__tail {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* Will-change hints the browser this element will be transformed by GSAP */
+  will-change: transform;
+}
+
+/* Corner label — bottom left */
+.board-stage__label {
+  position: absolute;
+  bottom: var(--section-pad-y);
+  left: var(--section-pad-x);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.board-stage__desc {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+}

@@ -1,0 +1,128 @@
+/* Lightbox.css */
+
+/* Full-screen frosted overlay */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 13, 18, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Card that holds image + controls */
+.lightbox__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px var(--color-border-accent),
+    0 40px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Image container — clips the zoom */
+.lightbox__img-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  min-height: 0;
+  max-height: calc(90vh - 64px);
+  user-select: none;
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+/* Controls bar at the bottom */
+.lightbox__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-surface);
+  flex-shrink: 0;
+  height: 56px;
+}
+
+.lightbox__zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Shared button style */
+.lightbox__btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.lightbox__btn:hover:not(:disabled) {
+  background: var(--color-accent-dim);
+  border-color: var(--color-border-accent);
+  color: var(--color-accent);
+}
+
+.lightbox__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Zoom % label doubles as a reset button */
+.lightbox__zoom-label {
+  min-width: 54px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.lightbox__zoom-label:hover {
+  color: var(--color-accent);
+  border-color: var(--color-border-accent);
+}
+
+/* Close button */
+.lightbox__close {
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
