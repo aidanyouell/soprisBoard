@@ -57,7 +57,9 @@
 
 .hero__tagline {
   margin-top: 0.5rem;
-  max-width: 480px;
+  max-width: 560px;
+  /* Inherits left-align from flex column — no extra offset */
+  align-self: flex-start;
 }
 
 /* Scroll hint — bottom center */

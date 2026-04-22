@@ -1,0 +1,57 @@
+/* LogoReset.css */
+
+.logo-reset {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  /* opacity driven by GSAP */
+}
+
+/* ── Rings ─────────────────────────────────────────── */
+.logo-reset__ring {
+  position: absolute;
+  /* Each ring is a perfect circle centered in the overlay */
+  width:  min(80vw, 80vh);
+  height: min(80vw, 80vh);
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+
+  /* Rings graduate from solid accent → transparent as index increases */
+  opacity: calc(1 - var(--ring-index) * 0.15);
+
+  /* GSAP drives scale from 0 → 2.8, so they all start at the same center */
+  transform: scale(0);
+
+  /* Alternate: every other ring is filled with a very faint amber */
+}
+
+/* Even-indexed rings get a faint fill for depth */
+.logo-reset__ring:nth-child(even) {
+  background: radial-gradient(
+    circle,
+    rgba(245, 166, 35, 0.06) 0%,
+    transparent 70%
+  );
+  border-color: rgba(245, 166, 35, 0.5);
+}
+
+/* ── Brand word ─────────────────────────────────────── */
+.logo-reset__word {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 14vw, 11rem);
+  line-height: 1;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  text-shadow:
+    0 0 40px rgba(245, 166, 35, 0.5),
+    0 0 80px rgba(245, 166, 35, 0.2);
+  /* opacity driven by GSAP */
+  opacity: 0;
+}

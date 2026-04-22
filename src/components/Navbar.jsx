@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import LogoReset from './LogoReset'
 import './Navbar.css'
 
-// Board link covers both hero + board-stage sections
 const NAV_LINKS = [
   { label: 'Board',    href: '#hero',     sections: ['hero', 'board-stage'] },
   { label: 'Features', href: '#features', sections: ['features'] },
@@ -11,12 +11,14 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
-  const navRef  = useRef(null)
-  const [active,  setActive]  = useState('hero')
-  const [hidden,  setHidden]  = useState(false)
-  const [filled,  setFilled]  = useState(false)
+  const navRef   = useRef(null)
   const lastY    = useRef(0)
   const ticking  = useRef(false)
+
+  const [active,      setActive]      = useState('hero')
+  const [hidden,      setHidden]      = useState(false)
+  const [filled,      setFilled]      = useState(false)
+  const [showReset,   setShowReset]   = useState(false)
 
   // Entrance animation
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function Navbar() {
     )
   }, [])
 
-  // Hide on scroll down, reveal on scroll up
+  // Hide on scroll down, show on scroll up
   useEffect(() => {
     const handleScroll = () => {
       if (ticking.current) return
@@ -35,12 +37,7 @@ export default function Navbar() {
       requestAnimationFrame(() => {
         const y = window.scrollY
         const goingDown = y > lastY.current
-        // Only hide after we've scrolled past the nav height
-        if (y > 80) {
-          setHidden(goingDown)
-        } else {
-          setHidden(false)
-        }
+        setHidden(y > 80 && goingDown)
         setFilled(y > 40)
         lastY.current = y
         ticking.current = false
@@ -50,20 +47,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Active section tracking via IntersectionObserver
-  // More reliable than ScrollTrigger with pinned sections
+  // Active section via IntersectionObserver
   useEffect(() => {
     const sectionIds = ['hero', 'board-stage', 'features', 'specs', 'gallery']
-    const observers = []
+    const observers  = []
 
     sectionIds.forEach((id) => {
       const el = document.getElementById(id)
       if (!el) return
-
       const obs = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            // Find which nav link owns this section id
             const match = NAV_LINKS.find((l) => l.sections.includes(id))
             if (match) setActive(match.sections[0])
           }
@@ -73,52 +67,83 @@ export default function Navbar() {
       obs.observe(el)
       observers.push(obs)
     })
-
     return () => observers.forEach((o) => o.disconnect())
   }, [])
 
-  const handleClick = (e, href) => {
+  // ── Instant jump: stop Lenis, snap position, restart Lenis ──
+  const jumpTo = (e, href) => {
     e.preventDefault()
     const id = href.replace('#', '')
     const el = document.getElementById(id)
     if (!el) return
+
     const lenis = window.__lenis
-    if (lenis) {
-      lenis.scrollTo(el, { duration: 1.6 })
-    } else {
-      el.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (lenis) lenis.stop()
+
+    // Instant native scroll
+    const top = el.getBoundingClientRect().top + window.scrollY
+    window.scrollTo({ top, behavior: 'instant' })
+
+    // Re-enable Lenis + refresh ScrollTrigger after snap
+    requestAnimationFrame(() => {
+      if (lenis) lenis.start()
+      // Small delay so GSAP remeasures after the snap
+      setTimeout(() => {
+        const { ScrollTrigger } = window.__gsap_st || {}
+        if (ScrollTrigger) ScrollTrigger.refresh()
+      }, 50)
+    })
+  }
+
+  // ── Logo click: play reset animation then snap to top ──
+  const handleLogoClick = (e) => {
+    e.preventDefault()
+    setShowReset(true)
+  }
+
+  const handleResetComplete = () => {
+    setShowReset(false)
+    const lenis = window.__lenis
+    if (lenis) lenis.stop()
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    requestAnimationFrame(() => {
+      if (lenis) lenis.start()
+    })
   }
 
   return (
-    <nav
-      ref={navRef}
-      className={[
-        'navbar',
-        filled ? 'navbar--filled' : '',
-        hidden ? 'navbar--hidden' : '',
-      ].join(' ')}
-    >
-      <a href="#hero" className="navbar__logo" onClick={(e) => handleClick(e, '#hero')}>
-        <span className="navbar__logo-text">SOPRIS</span>
-      </a>
+    <>
+      <nav
+        ref={navRef}
+        className={[
+          'navbar',
+          filled ? 'navbar--filled' : '',
+          hidden ? 'navbar--hidden' : '',
+        ].join(' ')}
+      >
+        <a href="#hero" className="navbar__logo" onClick={handleLogoClick}>
+          <span className="navbar__logo-text">SOPRIS</span>
+        </a>
 
-      <ul className="navbar__links">
-        {NAV_LINKS.map(({ label, href, sections }) => {
-          const isActive = sections.includes(active)
-          return (
-            <li key={href}>
-              <a
-                href={href}
-                className={`navbar__link${isActive ? ' navbar__link--active' : ''}`}
-                onClick={(e) => handleClick(e, href)}
-              >
-                {label}
-              </a>
-            </li>
-          )
-        })}
-      </ul>
-    </nav>
+        <ul className="navbar__links">
+          {NAV_LINKS.map(({ label, href, sections }) => {
+            const isActive = sections.includes(active)
+            return (
+              <li key={href}>
+                <a
+                  href={href}
+                  className={`navbar__link${isActive ? ' navbar__link--active' : ''}`}
+                  onClick={(e) => jumpTo(e, href)}
+                >
+                  {label}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+
+      {showReset && <LogoReset onComplete={handleResetComplete} />}
+    </>
   )
 }

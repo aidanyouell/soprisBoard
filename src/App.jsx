@@ -36,7 +36,8 @@ export default function App() {
       smoothWheel: true,
     })
     lenisRef.current = lenis
-    window.__lenis = lenis  // expose for navbar click handler
+    window.__lenis   = lenis
+    window.__gsap_st = { ScrollTrigger }
 
     // Wire Lenis into GSAP's ticker so ScrollTrigger stays in sync
     lenis.on('scroll', ScrollTrigger.update)
@@ -87,14 +88,14 @@ export default function App() {
           })
         }
 
-        // ── INTRO: slide up + fade in ──
+        // ── INTRO: fade + slide up ──
         gsap.fromTo(
           panel,
-          { opacity: 0, y: 80 },
+          { opacity: 0, y: 60 },
           {
             opacity:  1,
             y:        0,
-            duration: 1,
+            duration: 0.9,
             ease:     'power3.out',
             scrollTrigger: {
               trigger:       panel,
@@ -115,17 +116,24 @@ export default function App() {
           onLeaveBack: () => panel.classList.remove('is-active'),
         })
 
-        // ── Stagger children into view ──
+        // ── Stagger children into view — fade + slide up ──
         const children = panel.querySelectorAll('.panel-content > *')
         if (children.length) {
+          // Specs section slides in from the left instead
+          const isSpecs = panel.id === 'specs'
           gsap.fromTo(
             children,
-            { opacity: 0, y: 36 },
+            {
+              opacity: 0,
+              x: isSpecs ? -60 : 0,
+              y: isSpecs ? 0  : 36,
+            },
             {
               opacity:  1,
+              x:        0,
               y:        0,
-              duration: 0.7,
-              stagger:  0.13,
+              duration: 0.75,
+              stagger:  0.14,
               ease:     'power2.out',
               scrollTrigger: {
                 trigger:       panel,
