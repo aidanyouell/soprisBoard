@@ -1,15 +1,15 @@
 import './Specs.css'
+import model from '../assets/isometricleft.png'
 
 const SPECS = [
-  { label: 'Core',              value: 'Material / wood type here' },
-  { label: 'Base',              value: 'Sintered / extruded — material name' },
-  { label: 'Sidewall',          value: 'Material here' },
-  { label: 'Topsheet',          value: 'Material here' },
-  { label: 'Binding Interface', value: 'Standard / proprietary' },
-  { label: 'Tail Connection',   value: 'Describe attachment mechanism' },
-  { label: 'Lengths Available', value: '150 / 155 / 160 cm' },
+  { label: 'Core',              value: 'Poplar wood' },
+  { label: 'Base',              value: 'Black Polyethylene' },
+  { label: 'Sidewall',          value: 'Polyurethane' },
+  { label: 'Topsheet',          value: 'Brushed Nylon/Polyamide' },
+  { label: 'Binding Interface', value: 'Standard' },
+  { label: 'Tail Connection',   value: '2mm Carbon fiber sheet + Karakoram Ultra Splitboard Clips' },
+  { label: 'Lengths Available', value: '160 cm (5.25 in)' },
   { label: 'Width (waist)',     value: '25.0 cm' },
-  { label: 'Stance Setback',    value: '0 mm' },
 ]
 
 export default function Specs() {
@@ -41,11 +41,10 @@ export default function Specs() {
         <div className="specs__graphic-wrap">
           <img
             className="specs__graphic"
-            src="/images/layers-placeholder.png"
+            src= {model}
             alt="Exploded view of board layers"
           />
           <p className="specs__graphic-caption">
-            Board layer diagram — replace with your graphic
           </p>
         </div>
       </div>

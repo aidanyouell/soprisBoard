@@ -43,10 +43,15 @@
 
 .navbar__logo-text {
   font-family: var(--font-display);
+  font-variation-settings: "LIFT" 50, "HORZ" 100, "VERT" 28, "THRU" 80;
   font-size: 1.3rem;
   letter-spacing: 0.12em;
   color: var(--color-text-primary);
   transition: color 0.2s ease;
+}
+
+.navbar--filled .navbar__logo-text {
+  color: var(--color-text-primary);
 }
 
 .navbar__logo:hover .navbar__logo-text {
@@ -73,6 +78,15 @@
   transition: color 0.2s ease;
 }
 
+.navbar--filled .navbar__link {
+  color: var(--color-text-primary);
+}
+
+.navbar--filled .navbar__link:hover,
+.navbar--filled .navbar__link--active {
+  color: var(--color-accent);
+}
+
 /* Underline slide-in on hover / active */
 .navbar__link::after {
   content: '';
@@ -88,6 +102,10 @@
 .navbar__link:hover,
 .navbar__link--active {
   color: var(--color-text-primary);
+}
+
+.navbar--filled .navbar__link:hover {
+  color: var(--color-accent);
 }
 
 .navbar__link:hover::after,

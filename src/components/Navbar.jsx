@@ -71,31 +71,19 @@ export default function Navbar() {
   }, [])
 
   // ── Instant jump: stop Lenis, snap position, restart Lenis ──
-  const jumpTo = (e, href) => {
-    e.preventDefault()
-    const id = href.replace('#', '')
-    const el = document.getElementById(id)
-    if (!el) return
-
-    const lenis = window.__lenis
-    if (lenis) lenis.stop()
-
-    // Instant native scroll
-    const top = el.getBoundingClientRect().top + window.scrollY
-    window.scrollTo({ top, behavior: 'instant' })
-
-    // Re-enable Lenis + refresh ScrollTrigger after snap
-    requestAnimationFrame(() => {
-      if (lenis) lenis.start()
-      // Small delay so GSAP remeasures after the snap
-      setTimeout(() => {
-        const { ScrollTrigger } = window.__gsap_st || {}
-        if (ScrollTrigger) ScrollTrigger.refresh()
-      }, 50)
-    })
+const jumpTo = (e, href) => {
+  e.preventDefault();
+  const target = document.querySelector(href);
+  
+  if (target && window.__lenis) {
+    window.__lenis.scrollTo(target, {
+      offset: 0,
+      immediate: false,
+    });
   }
+};
 
-  // ── Logo click: play reset animation then snap to top ──
+  // ── Logo click: play reset animation, snap home at midpoint ──
   const handleLogoClick = (e) => {
     e.preventDefault()
     setShowReset(true)
@@ -103,12 +91,20 @@ export default function Navbar() {
 
   const handleResetComplete = () => {
     setShowReset(false)
+    // Scroll already happened mid-animation in LogoReset
+    // Just make sure Lenis is running
+    const lenis = window.__lenis
+    if (lenis) {
+      lenis.start()
+      ScrollTrigger?.refresh()
+    }
+  }
+
+  // Called by LogoReset at the midpoint of its animation (before fade-out)
+  const handleResetMidpoint = () => {
     const lenis = window.__lenis
     if (lenis) lenis.stop()
     window.scrollTo({ top: 0, behavior: 'instant' })
-    requestAnimationFrame(() => {
-      if (lenis) lenis.start()
-    })
   }
 
   return (
@@ -143,7 +139,12 @@ export default function Navbar() {
         </ul>
       </nav>
 
-      {showReset && <LogoReset onComplete={handleResetComplete} />}
+      {showReset && (
+        <LogoReset
+          onMidpoint={handleResetMidpoint}
+          onComplete={handleResetComplete}
+        />
+      )}
     </>
   )
 }

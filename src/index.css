@@ -3,51 +3,54 @@
    ============================================================ */
 
 /*
-  Adobe Fonts (Nobel + Finder) are loaded via index.html:
+  Adobe Fonts loaded via index.html:
   <link rel="stylesheet" href="https://use.typekit.net/urk1lcs.css">
-  No @import needed here — the <link> tag handles it.
+
+  Font roles:
+    jetlab  → titles, large display text, headings
+    finder  → body copy, UI labels, readable text
 */
 
 /* ---------- DESIGN TOKENS ---------- */
 :root {
-  /* Backgrounds */
+  /* Backgrounds — dark blue-grey */
   --color-bg:          #161B22;
   --color-bg-surface:  #1E2530;
   --color-bg-raised:   #252D3A;
 
-  /* Accent */
-  --color-accent:      #cc4f10;
-  --color-accent-dim:  rgba(204, 79, 16, 0.18);
-  --color-accent-glow: rgba(204, 79, 16, 0.35);
+  /* Accent — steel blue (kept from new scheme) */
+  --color-accent:      #7B9FC4;
+  --color-accent-dim:  rgba(123, 159, 196, 0.15);
+  --color-accent-glow: rgba(123, 159, 196, 0.3);
 
-  /* Text */
+  /* Text — light on dark */
   --color-text-primary:   #F0F4F8;
   --color-text-secondary: #8A97A8;
   --color-text-muted:     #4A5568;
 
   /* Borders */
   --color-border:        rgba(255, 255, 255, 0.07);
-  --color-border-accent: rgba(245, 166, 35, 0.4);
- 
-  /* Typography — Adobe Fonts kit names */
-  --font-display: 'nobel', 'Arial Black', sans-serif;
+  --color-border-accent: rgba(123, 159, 196, 0.4);
+
+  /* Typography — Adobe Fonts */
+  --font-display: 'jetlab-variable', 'Arial Black', sans-serif;
   --font-body:    'finder', 'Helvetica Neue', sans-serif;
- 
+
   /* Spacing / sizing */
   --section-pad-x: clamp(1.5rem, 5vw, 6rem);
   --section-pad-y: clamp(3rem, 8vh, 7rem);
- 
+
   /* Transitions */
   --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
- 
+
 /* ---------- RESET ---------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
- 
+
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -55,7 +58,7 @@ html {
   /* Prevent scroll while GSAP pins sections */
   scroll-behavior: auto;
 }
- 
+
 body {
   background-color: var(--color-bg);
   color: var(--color-text-primary);
@@ -64,17 +67,17 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
 }
- 
+
 img {
   display: block;
   max-width: 100%;
 }
- 
+
 button {
   font-family: var(--font-body);
   cursor: pointer;
 }
- 
+
 /* ---------- SHARED SECTION SHELL ----------
    Every section gets .section-panel — a full-viewport panel
    that GSAP will pin and animate between.
@@ -88,11 +91,27 @@ button {
   justify-content: center;
   padding: var(--section-pad-y) var(--section-pad-x);
   overflow: hidden;
- 
+
   /* Subtle top border line to define section edges */
   border-top: 1px solid var(--color-border);
 }
- 
+
+/* Dot-grid texture for all sections - fixed to viewport */
+.section-panel::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    radial-gradient(circle, rgba(123, 159, 196, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-attachment: fixed;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* Accent hairline that animates in when a section enters */
 .section-panel::before {
   content: '';
@@ -104,20 +123,21 @@ button {
   background: linear-gradient(90deg, var(--color-accent), transparent);
   transition: width 0.8s var(--ease-smooth);
 }
- 
+
 .section-panel.is-active::before {
   width: 60%;
 }
- 
+
 /* ---------- SHARED TYPOGRAPHY ---------- */
 .section-heading {
   font-family: var(--font-display);
+  font-variation-settings: "LIFT" 50, "HORZ" 100, "VERT" 28, "THRU" 80;
   font-size: clamp(3rem, 8vw, 7rem);
   line-height: 0.95;
   letter-spacing: 0.02em;
   color: var(--color-text-primary);
 }
- 
+
 .section-subheading {
   font-size: clamp(0.85rem, 1.5vw, 1rem);
   font-weight: 500;
@@ -126,7 +146,7 @@ button {
   color: var(--color-accent);
   margin-bottom: 0.75rem;
 }
- 
+
 .section-body {
   font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   color: var(--color-text-secondary);
@@ -134,7 +154,7 @@ button {
   line-height: 1.75;
   text-align: left;
 }
- 
+
 /* ---------- ACCENT CHIP ---------- */
 .accent-chip {
   display: inline-block;
@@ -148,7 +168,7 @@ button {
   color: var(--color-accent);
   background: var(--color-accent-dim);
 }
- 
+
 /* ---------- SCROLL PROGRESS INDICATOR ---------- */
 #scroll-progress {
   position: fixed;

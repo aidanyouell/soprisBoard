@@ -8,6 +8,12 @@ import gallery2 from '../assets/gallery2.png'
 import gallery3 from '../assets/gallery3.jpg'
 import gallery4 from '../assets/gallery4.jpg'
 import gallery5 from '../assets/gallery5.jpg'
+import gallery6 from '../assets/gallery6.jpg'
+import gallery7 from '../assets/gallery7.jpg'
+import gallery8 from '../assets/gallery8.jpg'
+import gallery9 from '../assets/gallery9.jpg'
+import gallery10 from '../assets/gallery10.jpg'
+import gallery11 from '../assets/gallery11.jpg'
  
 const GALLERY_IMAGES = [
   { id: 1, src: gallery1, alt: 'Gallery photo 1' },
@@ -15,6 +21,12 @@ const GALLERY_IMAGES = [
   { id: 3, src: gallery3, alt: 'Gallery photo 3' },
   { id: 4, src: gallery4, alt: 'Gallery photo 4' },
   { id: 5, src: gallery5, alt: 'Gallery photo 5' },
+  { id: 6, src: gallery6, alt: 'Gallery photo 6' },
+  { id: 7, src: gallery7, alt: 'Gallery photo 7' },
+  { id: 8, src: gallery8, alt: 'Gallery photo 8' },
+  { id: 9, src: gallery9, alt: 'Gallery photo 9' },
+  { id: 10, src: gallery10, alt: 'Gallery photo 10' },
+  { id: 11, src: gallery11, alt: 'Gallery photo 11' },
 ]
  
 export default function Gallery() {

@@ -1,57 +1,76 @@
-/* boardStage.css */
-
+/* 1. Ensure the container creates a stacking context for the glow */
 .board-stage {
+  position: relative;
   background-color: var(--color-bg);
-  align-items: center;
-  justify-content: center;
+  /* Remove the !important resets, they are likely interfering with stacking */
+  display: block; 
 }
 
-/* Radial amber glow behind the board */
 .board-stage__bg-glow {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: radial-gradient(
-    ellipse 60% 50% at 50% 55%,
-    rgba(245, 166, 35, 0.07) 0%,
+    ellipse 60% 50% at 50% 50%,
+    rgba(123, 159, 196, 0.25) 0%, /* Increased visibility */
     transparent 70%
   );
   pointer-events: none;
 }
 
-/* Board image stack — body + tail sit flush */
-.board-stage__wrap {
+/* Update the Assembly container */
+.board-stage__assembly {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 320px;
-  /* Leave room for the label at the bottom */
-  margin-bottom: 5rem;
+  z-index: 1;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  height: auto; 
+  /* Use min-height if you still want to ensure it feels "big" */
+  min-height: 80vh; 
+  
+  padding-top: 0;
+  padding-bottom: 2rem;        /* Removed the hacky padding */
 }
 
-.board-stage__body,
-.board-stage__tail {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  /* Will-change hints the browser this element will be transformed by GSAP */
-  will-change: transform;
+.board-stage__left,
+.board-stage__right {
+  position: relative;
+  flex: 0 0 auto;
+  
+  /* THIS IS THE CHANGE: Force width to be 75% of the viewport */
+  width: 60vw; 
+  /* This prevents the images from being cut off if they get too tall */
+  height: auto; 
+  max-height: 90vh; /* Keeps them from overflowing the screen vertically */
+  
+  will-change: transform, opacity;
 }
 
-/* Corner label — bottom left */
+.board-stage__left {
+  z-index: 1;
+  /* Start with a large negative value like -250px and adjust until they touch */
+  margin-right: -46px; 
+}
+
+.board-stage__right {
+  z-index: 2;
+  /* Match the left piece to keep them centered */
+  margin-left: -46px; 
+  width: 18.75vw;
+  margin-top: 0vh;
+}
+
+/* 5. Ensure label is on top */
 .board-stage__label {
-  position: absolute;
-  bottom: var(--section-pad-y);
-  left: var(--section-pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  position: relative;
+  z-index: 2; 
+  /* ... keep your existing label styles ... */
 }
 
 .board-stage__desc {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
+  color: var(--color-text-secondary, #a0a0a0); /* Provide fallback if variable is missing */
+  font-family: var(--font-body, sans-serif);  /* Provide fallback if variable is missing */
 }

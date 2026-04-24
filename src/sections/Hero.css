@@ -3,16 +3,18 @@
 .hero {
   background-color: var(--color-bg);
   justify-content: center;
+  align-items: flex-start;
 }
 
-/* Subtle dot-grid background */
+/* Dot-grid texture */
 .hero__bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle, rgba(245, 166, 35, 0.06) 1px, transparent 1px);
+    radial-gradient(circle, rgba(123, 159, 196, 0.08) 1px, transparent 1px);
   background-size: 36px 36px;
   pointer-events: none;
+  z-index: 0;
 }
 
 /* Content column */
@@ -21,48 +23,71 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 900px;
+  gap: 1rem;
+  width: 100%;
 }
 
-/* SOPRIS — the dominant display word */
+/* ── Brand wrap ─────────────────────────────────────────────────
+   Inline-block so it wraps tightly around the SOPRIS text width.
+   The board image is absolute inside this, sized to cover it fully.
+   ─────────────────────────────────────────────────────────── */
+.hero__brand-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 0.88;
+}
+
+/* Board image — large, full opacity, behind the text */
+.hero__board-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Much larger than the text block so the board fills the area */
+  width: 140%;
+  height: 260%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 0;           /* behind SOPRIS text */
+  opacity: 1;           /* full opacity */
+  pointer-events: none;
+  user-select: none;
+}
+
+/* SOPRIS — on top of the board image */
 .hero__brand {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-display);
-  font-size: clamp(7rem, 20vw, 18rem);
+  font-variation-settings: "LIFT" 50, "HORZ" 100, "VERT" 28, "THRU" 80;
+  font-size: clamp(6rem, 18vw, 16rem);
   line-height: 0.88;
   letter-spacing: -0.01em;
   color: var(--color-text-primary);
-  /* Tight tracking so it feels like a logo */
+  margin-left: -0.03em;
 }
 
-/* Stacked descriptor words — smaller, flush left below brand */
+/* Stacked words */
 .hero__stack {
   display: flex;
   flex-direction: column;
   gap: 0;
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .hero__stack span {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3.5vw, 3rem);
+  font-variation-settings: "LIFT" 50, "HORZ" 100, "VERT" 28, "THRU" 80;
+  font-size: clamp(1.2rem, 3vw, 2.6rem);
   letter-spacing: 0.08em;
   color: var(--color-text-secondary);
 }
 
-/* Amber accent on the first word */
 .hero__stack span:first-child {
   color: var(--color-accent);
 }
 
-.hero__tagline {
-  margin-top: 0.5rem;
-  max-width: 560px;
-  /* Inherits left-align from flex column — no extra offset */
-  align-self: flex-start;
-}
-
-/* Scroll hint — bottom center */
+/* Scroll hint */
 .hero__scroll-hint {
   position: absolute;
   bottom: 2.5rem;
@@ -73,6 +98,7 @@
   align-items: center;
   gap: 0.5rem;
   opacity: 0.45;
+  z-index: 2;
 }
 
 .hero__scroll-label {

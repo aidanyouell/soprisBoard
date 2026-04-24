@@ -1,0 +1,27 @@
+/* Specs.css */
+
+/* Ensure the layout is a two-column grid */
+.specs__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+/* Center the image within its allocated right-hand space */
+.specs__graphic-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers both the image and the text */
+  gap: 1rem;           /* Adds space between the image and the text */
+  margin-top: -15rem; 
+  position: relative;
+}
+
+/* Set the image to a responsive size */
+.specs__graphic {
+  width: 100%;
+  max-width: 900px; /* Adjust this value to set the maximum size */
+  height: auto;
+  object-fit: contain;
+}

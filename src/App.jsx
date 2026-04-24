@@ -7,7 +7,6 @@ import Navbar     from './components/Navbar'
 import Lightbox   from './components/Lightbox'
 import Hero       from './sections/Hero'
 import BoardStage from './sections/BoardStage'
-import Logo       from './sections/Logo'
 import Features   from './sections/Features'
 import Specs      from './sections/Specs'
 import Gallery    from './sections/Gallery'
@@ -17,7 +16,6 @@ import './App.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Expose a setter so any section can open the lightbox
 export let openLightbox = () => {}
 
 export default function App() {
@@ -29,56 +27,60 @@ export default function App() {
   openLightbox = (src, alt) => setLightboxImg({ src, alt })
 
   useLayoutEffect(() => {
-    // ── 1. Lenis smooth scroll ─────────────────────────────
+    // ── 1. Lenis ───────────────────────────────────────────
     const lenis = new Lenis({
-      duration:  1.4,          // how long a scroll "coast" lasts
-      easing:    (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration:    1.4,
+      easing:      (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
     lenisRef.current = lenis
     window.__lenis   = lenis
     window.__gsap_st = { ScrollTrigger }
 
-    // Wire Lenis into GSAP's ticker so ScrollTrigger stays in sync
     lenis.on('scroll', ScrollTrigger.update)
     gsap.ticker.add((time) => lenis.raf(time * 1000))
     gsap.ticker.lagSmoothing(0)
 
-    // ── 2. GSAP scroll animations ──────────────────────────
+    // ── 2. Scroll animations ────────────────────────────────
     const ctx = gsap.context(() => {
-      const panels = gsap.utils.toArray('.section-panel')
 
-      // Global progress bar
-      ScrollTrigger.create({
-        start: 'top top',
-        end:   'bottom bottom',
-        onUpdate: (self) => {
-          if (progressRef.current)
-            progressRef.current.style.width = `${self.progress * 100}%`
-        },
-      })
+      // Progress bar — raw scroll position, unaffected by pins
+      const updateProgress = () => {
+        const scrollTop = window.scrollY
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight
+        if (progressRef.current)
+          progressRef.current.style.width = docHeight > 0
+            ? `${(scrollTop / docHeight) * 100}%`
+            : '0%'
+      }
+      window.addEventListener('scroll', updateProgress, { passive: true })
 
-      panels.forEach((panel, i) => {
-        const isLast = i === panels.length - 1
+      // ── Collect panels, EXCLUDING board-stage (manages its own pin) ──
+      const allPanels   = gsap.utils.toArray('.section-panel')
+      const appPanels   = allPanels.filter(p => p.id !== 'board-stage')
 
-        // ── PIN each panel (except last) ──
+      appPanels.forEach((panel, i) => {
+        const isLast  = i === appPanels.length - 1
+        const isFirst = panel.id === 'hero'
+        const isSpecs = panel.id === 'specs'
+
+        // ── PIN + OUTRO (everything except gallery) ─────────
         if (!isLast) {
           ScrollTrigger.create({
-            trigger:     panel,
-            start:       'top top',
-            end:         '+=600',
-            pin:         true,
-            pinSpacing:  true,
+            trigger:       panel,
+            start:         'top top',
+            end:           '+=600',
+            pin:           true,
+            pinSpacing:    true,
             anticipatePin: 1,
-            // markers: true,   // ← uncomment to debug pin positions
           })
 
-          // ── OUTRO: scale + fade out while pinned ──
+          // Fade + scale out while pinned
           gsap.to(panel, {
-            opacity:  0,
-            scale:    0.94,
-            y:        -50,
-            ease:     'none',
+            opacity: 0,
+            scale:   0.94,
+            y:       -50,
+            ease:    'none',
             scrollTrigger: {
               trigger: panel,
               start:   'top top',
@@ -88,24 +90,58 @@ export default function App() {
           })
         }
 
-        // ── INTRO: fade + slide up ──
-        gsap.fromTo(
-          panel,
-          { opacity: 0, y: 60 },
-          {
-            opacity:  1,
-            y:        0,
-            duration: 0.9,
-            ease:     'power3.out',
-            scrollTrigger: {
-              trigger:       panel,
-              start:         'top 90%',
-              toggleActions: 'play none none reverse',
-            },
+        // ── INTRO animations ────────────────────────────────
+        if (isFirst) {
+          // Hero: guarantee it's visible, animate children in on load
+          gsap.set(panel, { opacity: 1, y: 0, scale: 1 })
+          const kids = panel.querySelectorAll('.panel-content > *')
+          if (kids.length) {
+            gsap.fromTo(kids,
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out', delay: 0.2 }
+            )
           }
-        )
+        } else {
+          // All other panels: fade + slide up on scroll enter (never reverse)
+          gsap.fromTo(panel,
+            { opacity: 0, y: 50 },
+            {
+              opacity: 1, y: 0,
+              duration: 0.85,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: panel,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+              },
+            }
+          )
 
-        // ── Active class for accent hairline ──
+          // Child stagger (specs slides from left)
+          const kids = panel.querySelectorAll('.panel-content > *')
+          if (kids.length) {
+            gsap.fromTo(kids,
+              {
+                opacity: 0,
+                x: isSpecs ? -60 : 0,
+                y: isSpecs ? 0   : 30,
+              },
+              {
+                opacity: 1, x: 0, y: 0,
+                duration: 0.7,
+                stagger: 0.12,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: panel,
+                  start: 'top 85%',
+                  toggleActions: 'play none none none',
+                },
+              }
+            )
+          }
+        }
+
+        // Accent hairline active state
         ScrollTrigger.create({
           trigger:     panel,
           start:       'top 55%',
@@ -115,42 +151,11 @@ export default function App() {
           onEnterBack: () => panel.classList.add('is-active'),
           onLeaveBack: () => panel.classList.remove('is-active'),
         })
-
-        // ── Stagger children into view — fade + slide up ──
-        const children = panel.querySelectorAll('.panel-content > *')
-        if (children.length) {
-          // Specs section slides in from the left instead
-          const isSpecs = panel.id === 'specs'
-          gsap.fromTo(
-            children,
-            {
-              opacity: 0,
-              x: isSpecs ? -60 : 0,
-              y: isSpecs ? 0  : 36,
-            },
-            {
-              opacity:  1,
-              x:        0,
-              y:        0,
-              duration: 0.75,
-              stagger:  0.14,
-              ease:     'power2.out',
-              scrollTrigger: {
-                trigger:       panel,
-                start:         'top 80%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          )
-        }
       })
 
-      // ── Refresh AFTER fonts + images settle ──────────────
-      // This is the key fix: fonts / images shift layout after
-      // first paint and throw off ScrollTrigger's measurements.
+      // Refresh after fonts + images settle
       window.addEventListener('load', () => ScrollTrigger.refresh())
-      // Belt-and-suspenders: also refresh after a short delay
-      setTimeout(() => ScrollTrigger.refresh(), 500)
+      setTimeout(() => ScrollTrigger.refresh(), 600)
 
     }, wrapperRef)
 
@@ -169,7 +174,6 @@ export default function App() {
       <div ref={wrapperRef}>
         <Hero />
         <BoardStage />
-        <Logo />
         <Features />
         <Specs />
         <Gallery />

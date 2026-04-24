@@ -4,7 +4,7 @@ import './LogoReset.css'
 
 const RING_COUNT = 5
 
-export default function LogoReset({ onComplete }) {
+export default function LogoReset({ onMidpoint, onComplete }) {
   const overlayRef = useRef(null)
   const ringRefs   = useRef([])
   const wordRef    = useRef(null)
@@ -44,8 +44,11 @@ export default function LogoReset({ onComplete }) {
       0.15
     )
 
-    // 4. Hold briefly
-    tl.to({}, { duration: 0.2 })
+    // 4. Hold briefly — scroll home NOW while screen is covered
+    tl.to({}, {
+      duration: 0.2,
+      onStart: () => onMidpoint?.(),
+    })
 
     // 5. Whole overlay flash-fades out
     tl.to(overlayRef.current, {
