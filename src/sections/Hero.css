@@ -11,7 +11,7 @@
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle, rgba(123, 159, 196, 0.08) 1px, transparent 1px);
+    radial-gradient(circle, rgba(123, 159, 196, 0.16) 1px, transparent 1px);
   background-size: 36px 36px;
   pointer-events: none;
   z-index: 0;

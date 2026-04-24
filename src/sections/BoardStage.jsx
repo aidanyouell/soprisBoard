@@ -33,6 +33,9 @@ export default function BoardStage() {
 
     const tl = gsap.timeline({ paused: true })
 
+    // Keep the board and glow hidden until the section is reached
+    gsap.set([left, right, glow], { opacity: 0, y: 12, scale: 0.98 })
+
     // Fade in the entire assembly when section comes into view
     gsap.fromTo(section,
       { opacity: 0 },
@@ -48,7 +51,19 @@ export default function BoardStage() {
       }
     )
 
-    // Phase 1 (0–0.3): board sits, label fades in
+    // Phase 1 (0–0.3): board sits, pieces fade in, label fades in
+    tl.fromTo([left, right],
+      { opacity: 0, y: 12, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' },
+      0
+    )
+
+    tl.fromTo(glow,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6, ease: 'power2.out' },
+      0
+    )
+
     tl.fromTo(label,
       { opacity: 0, y: 12 },
       { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' },

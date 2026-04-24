@@ -16,6 +16,7 @@
     transparent 70%
   );
   pointer-events: none;
+  opacity: 0;
 }
 
 /* Update the Assembly container */
@@ -46,6 +47,7 @@
   max-height: 90vh; /* Keeps them from overflowing the screen vertically */
   
   will-change: transform, opacity;
+  opacity: 0;
 }
 
 .board-stage__left {

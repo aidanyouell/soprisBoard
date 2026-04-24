@@ -7,9 +7,8 @@ const SPECS = [
   { label: 'Sidewall',          value: 'Polyurethane' },
   { label: 'Topsheet',          value: 'Brushed Nylon/Polyamide' },
   { label: 'Binding Interface', value: 'Standard' },
-  { label: 'Tail Connection',   value: '2mm Carbon fiber sheet + Karakoram Ultra Splitboard Clips' },
-  { label: 'Lengths Available', value: '160 cm (5.25 in)' },
-  { label: 'Width (waist)',     value: '25.0 cm' },
+  { label: 'Tail Connection',   value: '1.5mm Carbon fiber sheet + Karakoram Ultra Splitboard Clips' },
+  { label: 'Lengths Available', value: '147 cm (57.874 in)' },
 ]
 
 export default function Specs() {
